@@ -1,22 +1,27 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import random
+from typing import TYPE_CHECKING
 
-from .rgb import RGBContainer
-from .rgba import RGBA
-from .rgb_float import RGB_FLOAT
-from ..hex import Hex
+from ...types import RgbIntType
+from .rgb import RGB
+
+if TYPE_CHECKING:
+    from ..hex import Hex
+    from .rgb_float import RGB_FLOAT
+    from .rgba import RGBA
 
 
 @dataclass
-class RGB_INT(RGBContainer):
-    value: tuple[int, int, int]
+class RGB_INT(RGB[RgbIntType]):
+    value: RgbIntType
 
     def __post_init__(self):
-        r, g, b = self.value
-        for channel, name in zip((r, g, b), ("r", "g", "b")):
-            if not (0 <= channel <= 255):
-                raise ValueError(f"{name} must be between 0 and 255 (got {channel})")
+        if len(self.value) != 3:
+            raise ValueError(f"RGB_INT must have 3 channels (got {len(self.value)})")
+        for ch_value in self.value:
+            if not (0 <= ch_value <= 255):
+                raise ValueError(f"Value must be between 0 and 255 (got {self.value})")
 
     @classmethod
     def create_random(cls) -> RGB_INT:
@@ -68,15 +73,21 @@ class RGB_INT(RGBContainer):
 
     def to_rgba(self, alpha: int = 255) -> RGBA:
         """Convert RGB_INT to RGBA."""
+        from .rgba import RGBA
+
         return RGBA(value=(self.r, self.g, self.b, alpha))
 
     @property
     def to_rgb_float(self) -> RGB_FLOAT:
         """Convert RGB_INT to RGB_FLOAT."""
+        from .rgb_float import RGB_FLOAT
+
         return RGB_FLOAT(value=(self.r / 255.0, self.g / 255.0, self.b / 255.0))
 
     @property
     def to_hex(self) -> Hex:
         """Convert RGB_INT to Hex."""
+        from ..hex import Hex
+
         hex_str = self._format_hex(self.r, self.g, self.b)
         return Hex(value=hex_str)

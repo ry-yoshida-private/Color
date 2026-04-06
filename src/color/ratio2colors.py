@@ -1,9 +1,10 @@
-
 from .color_converter import ColorConverter
+from .types import RgbIntType
 
-class Ratio2Colors:
+
+class Ratio2IntColor:
     def __init__(self):
-        self.colors = [
+        self.colors: list[RgbIntType] = [
             (139, 0, 0),    # 0.0 - 0.1  dark red (RGB)
             (178, 34, 34),  # 0.1 - 0.2  firebrick (RGB)
             (255, 69, 0),   # 0.2 - 0.3  orange red (RGB)
@@ -19,19 +20,19 @@ class Ratio2Colors:
     def get_rgb_int_color(
         self,
         ratio: float
-        ) -> tuple[int, int, int]:
+        ) -> RgbIntType:
         """
-        Get the RGB color associated with the given confidence.
+        Get the RGB color associated with the given ratio.
 
         Parameters:
         ----------
-        confidence: float
-            The confidence value to get the color for.
+        ratio: float
+            The ratio value to get the color for.
 
         Returns:
         ----------
-        tuple[int, int, int]
-            The RGB color associated with the given confidence.
+        RgbInt
+            The RGB color associated with the given ratio.
         """
         index = min(int(ratio * 10), 9)  # clamp to 0–9
         rgb_int_color = self.colors[index]
@@ -40,25 +41,25 @@ class Ratio2Colors:
     def get_bgr_int_color(
         self, 
         ratio: float,
-        ) -> tuple[int, int, int]:
+        ) -> RgbIntType:
         """
-        Get the BGR color associated with the given confidence.
+        Get the BGR color associated with the given ratio.
 
         Parameters:
         ----------
-        confidence: float
-            The confidence value to get the color for.
+        ratio: float
+            The ratio value to get the color for.
 
         Returns:
         ----------
-        tuple[int, int, int]
-            The BGR color associated with the given confidence.
+        RgbInt
+            The BGR color associated with the given ratio.
         """
         rgb_int_color = self.get_rgb_int_color(ratio=ratio)
         return ColorConverter.RGB_INT2BGR_INT(color=rgb_int_color)
 
     def __str__(self) -> str:
-        return f"Ratio2Colors(colors={self.colors})"
+        return f"Ratio2IntColor(colors={self.colors})"
 
     def __repr__(self) -> str:
         return self.__str__()

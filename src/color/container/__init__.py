@@ -1,12 +1,14 @@
 from .base_class import ColorContainer
-from .rgb import RGBContainer, RGB_INT, RGB_FLOAT, RGBA
+from .rgb import RGB, RGB_INT, RGB_FLOAT, RGBA
 from .hex import Hex
+from .hsv import HSV
 
 __all__ = [
     "ColorContainer",
-    "RGBContainer",
+    "RGB",
     "RGB_INT",
     "RGB_FLOAT",
     "RGBA",
     "Hex",
+    "HSV",
 ]

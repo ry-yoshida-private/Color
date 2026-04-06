@@ -1,15 +1,26 @@
 from __future__ import annotations
 from abc import ABC
+from typing import TypeVar
 
+from ...types import HexType, RgbFloatType, RgbIntType, RgbaIntType
 from ..base_class import ColorContainer
 
-class RGBContainer(ColorContainer, ABC):
+RgbValueT = TypeVar("RgbValueT", RgbIntType, RgbFloatType, RgbaIntType)
+
+
+class RGB(ColorContainer[RgbValueT], ABC):
     """
     Base class for RGB series color containers (RGB_INT, RGBA, RGB_FLOAT).
+
+    Attributes
+    ----------
+    value: RgbValueT
+        The value of the RGB color.
     """
+    value: RgbValueT
 
     @staticmethod
-    def _parse_hex(hex_str: str) -> tuple[int, int, int]:
+    def _parse_hex(hex_str: str) -> RgbIntType:
         """
         Parse hex color string to (r, g, b) integers.
 
@@ -20,7 +31,7 @@ class RGBContainer(ColorContainer, ABC):
 
         Returns
         -------
-        tuple[int, int, int]
+        RgbInt
             (r, g, b) in 0-255
         """
         hex_str = hex_str.lstrip("#")
@@ -36,7 +47,7 @@ class RGBContainer(ColorContainer, ABC):
         r: int, 
         g: int, 
         b: int
-        ) -> str:
+        ) -> HexType:
         """
         Format (r, g, b) integers to hex color string.
 
@@ -47,7 +58,7 @@ class RGBContainer(ColorContainer, ABC):
 
         Returns
         -------
-        str
+        HexColor
             Hex string (e.g. "#ff0000")
         """
         return f"#{r:02x}{g:02x}{b:02x}"

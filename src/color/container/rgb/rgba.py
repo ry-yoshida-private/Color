@@ -1,24 +1,35 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import random
+from typing import TYPE_CHECKING
 
-from .rgb import RGBContainer
+from ...types import RgbaIntType
+from .rgb import RGB
 from .rgb_int import RGB_INT
-from .rgb_float import RGB_FLOAT
-from ..hex import Hex
+
+if TYPE_CHECKING:
+    from ..hex import Hex
+    from .rgb_float import RGB_FLOAT
 
 
 @dataclass
-class RGBA(RGBContainer):
-    value: tuple[int, int, int, int]
+class RGBA(RGB[RgbaIntType]):
+    """
+    RGBA color container.
+
+    Attributes
+    ----------
+    value: RgbaIntType
+        The value of the RGBA color.
+    """
+    value: RgbaIntType
 
     def __post_init__(self):
-        r, g, b, a = self.value
-        for channel, name in zip((r, g, b), ('r', 'g', 'b')):
-            if not (0 <= channel <= 255):
-                raise ValueError(f"{name} must be between 0 and 255 (got {channel})")
-        if not (0 <= a <= 255):
-            raise ValueError(f"alpha must be between 0 and 255 (got {a})")
+        if len(self.value) != 4:
+            raise ValueError(f"RGBA must have 4 channels (got {len(self.value)})")
+        for ch_value in self.value:
+            if not (0 <= ch_value <= 255):
+                raise ValueError(f"Value must be between 0 and 255 (got {self.value})")
 
     @classmethod
     def create_random(cls) -> RGBA:
@@ -63,7 +74,7 @@ class RGBA(RGBContainer):
         Parameters
         ----------
         color: RGB_INT
-            RGB_INT instance with value tuple[int, int, int]
+            RGB_INT instance with value RgbInt
         alpha: int, optional
             Alpha value (0-255), default is 255
 
@@ -105,7 +116,7 @@ class RGBA(RGBContainer):
         Parameters
         ----------
         color: RGB_FLOAT
-            RGB_FLOAT instance with value tuple[float, float, float] (0.0-1.0)
+            RGB_FLOAT instance with value RgbFloat (0.0-1.0)
         alpha: int, optional
             Alpha value (0-255), default is 255
 
@@ -176,6 +187,7 @@ class RGBA(RGBContainer):
         RGB_FLOAT
             RGB_FLOAT instance
         """
+        from .rgb_float import RGB_FLOAT
         return RGB_FLOAT(value=(self.r / 255.0, self.g / 255.0, self.b / 255.0))
 
     @property
@@ -188,5 +200,7 @@ class RGBA(RGBContainer):
         Hex
             Hex instance
         """
+        from ..hex import Hex
+
         hex_str = self._format_hex(self.r, self.g, self.b)
         return Hex(value=hex_str)

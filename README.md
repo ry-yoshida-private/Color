@@ -28,14 +28,14 @@ Dependencies are installed automatically.
 After installing the package, import it from any directory:
 
 ```python
-from color import ColorConverter, ID2Color, Ratio2Colors
+from color import ColorConverter, ID2IntColor, Ratio2IntColor
 
 rgb = (255, 128, 0)
 hex_color = ColorConverter.RGB_INT2HEX(rgb)
 
-id_mapper = ID2Color()
+id_mapper = ID2IntColor()
 track_color = id_mapper.get_bgr_int_color("track-001")
 
-ratio_mapper = Ratio2Colors()
+ratio_mapper = Ratio2IntColor()
 score_color = ratio_mapper.get_rgb_int_color(0.72)
 ```

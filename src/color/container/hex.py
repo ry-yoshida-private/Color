@@ -2,12 +2,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 import random
 
+from ..types import HexType
 from .rgb import RGBA, RGB_INT, RGB_FLOAT
 from .base_class import ColorContainer
 
 @dataclass
-class Hex(ColorContainer):
-    value: str
+class Hex(ColorContainer[HexType]):
+    value: HexType
 
     def __post_init__(self):
         if self.value[0] != "#":
@@ -58,7 +59,7 @@ class Hex(ColorContainer):
         Parameters
         ----------
         color: RGB_INT
-            RGB_INT instance with value tuple[int, int, int] (0-255)
+            RGB_INT instance with value RgbInt (0-255)
 
         Returns
         -------
@@ -79,7 +80,7 @@ class Hex(ColorContainer):
         Parameters
         ----------
         color: RGBA
-            RGBA instance with value tuple[int, int, int, int]
+            RGBA instance with value RgbaInt
 
         Returns
         -------
@@ -100,7 +101,7 @@ class Hex(ColorContainer):
         Parameters
         ----------
         color: RGB_FLOAT
-            RGB_FLOAT instance with value tuple[float, float, float] (0.0-1.0)
+            RGB_FLOAT instance with value RgbFloat (0.0-1.0)
 
         Returns
         -------

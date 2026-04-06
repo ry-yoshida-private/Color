@@ -1,22 +1,27 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import random
+from typing import TYPE_CHECKING
 
-from .rgb import RGBContainer
-from .rgba import RGBA
+from ...types import RgbFloatType
+from .rgb import RGB
 from .rgb_int import RGB_INT
-from ..hex import Hex
+
+if TYPE_CHECKING:
+    from ..hex import Hex
+    from .rgba import RGBA
 
 
 @dataclass
-class RGB_FLOAT(RGBContainer):
-    value: tuple[float, float, float]
+class RGB_FLOAT(RGB[RgbFloatType]):
+    value: RgbFloatType
 
     def __post_init__(self):
-        r, g, b = self.value
-        for channel, name in zip((r, g, b), ('r', 'g', 'b')):
-            if not (0.0 <= channel <= 1.0):
-                raise ValueError(f"{name} must be between 0.0 and 1.0 (got {channel})")
+        if len(self.value) != 3:
+            raise ValueError(f"RGB_FLOAT must have 3 channels (got {len(self.value)})")
+        for ch_value in self.value:
+            if not (0.0 <= ch_value <= 1.0):
+                raise ValueError(f"Value must be between 0.0 and 1.0 (got {self.value})")
 
     @classmethod
     def create_random(cls) -> RGB_FLOAT:
@@ -55,7 +60,7 @@ class RGB_FLOAT(RGBContainer):
         Parameters
         ----------
         color: RGB_INT
-            RGB_INT instance with value tuple[int, int, int] (0-255)
+            RGB_INT instance with value RgbInt (0-255)
 
         Returns
         -------
@@ -75,7 +80,7 @@ class RGB_FLOAT(RGBContainer):
         Parameters
         ----------
         color: RGBA
-            RGBA instance with value tuple[int, int, int, int]
+            RGBA instance with value RgbaInt
 
         Returns
         -------
@@ -153,6 +158,8 @@ class RGB_FLOAT(RGBContainer):
         RGBA
             RGBA instance
         """
+        from .rgba import RGBA
+
         r = round(self.r * 255)
         g = round(self.g * 255)
         b = round(self.b * 255)
@@ -179,6 +186,8 @@ class RGB_FLOAT(RGBContainer):
         Hex
             Hex instance
         """
+        from ..hex import Hex
+
         r = round(self.r * 255)
         g = round(self.g * 255)
         b = round(self.b * 255)

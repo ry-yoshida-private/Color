@@ -1,23 +1,25 @@
 import numpy as np
 from dataclasses import dataclass, field
+
 from .color_converter import ColorConverter
+from .types import HexType, RgbIntType
 
 @dataclass
-class ID2Color:
+class ID2IntColor:
     """
     A class for managing colors for unique identifiers.
 
     Attributes
     ----------
-    color_dict: dict[str, tuple[int, int, int]]
+    color_dict: dict[str, RgbInt]
         A dictionary to store the assigned colors in RGB format for each ID.
     """
-    color_dict: dict[str, tuple[int, int, int]] = field(default_factory=dict)
+    color_dict: dict[str, RgbIntType] = field(default_factory=dict)
 
     def get_rgb_int_color(
         self, 
         id_: str, 
-        ) -> tuple[int, int, int]:
+        ) -> RgbIntType:
         """
         Get the RGB color associated with the given ID.
 
@@ -28,7 +30,7 @@ class ID2Color:
 
         Returns:
         ----------
-        tuple[int, int, int]
+        RgbInt
             The RGB color associated with the given ID.
         """
         rgb_int_color = self._attribute_color_dict(id_)
@@ -37,7 +39,7 @@ class ID2Color:
     def get_bgr_int_color(
         self, 
         id_: str, 
-        ) -> tuple[int, int, int]:
+        ) -> RgbIntType:
         """
         Get the BGR color associated with the given ID.
 
@@ -48,7 +50,7 @@ class ID2Color:
 
         Returns:
         ----------
-        tuple[int, int, int]
+        RgbInt
             The BGR color associated with the given ID.
         """
         rgb_int_color = self._attribute_color_dict(id_=id_)
@@ -57,7 +59,7 @@ class ID2Color:
     def get_hex_color(
         self, 
         id_: str,
-        ) -> str:
+        ) -> HexType:
         """
         Get the hex color associated with the given ID.
 
@@ -68,13 +70,13 @@ class ID2Color:
 
         Returns:
         ----------
-        hex_color: str
+        HexColor
             The hex color associated with the given ID.
         """
         rgb_int_color = self._attribute_color_dict(id_=id_)
         return ColorConverter.RGB_INT2HEX(color=rgb_int_color)
 
-    def _attribute_color_dict(self, id_: str) -> tuple[int, int, int]:
+    def _attribute_color_dict(self, id_: str) -> RgbIntType:
         """
         Attribute a RGB color to the given ID.
         
@@ -84,7 +86,7 @@ class ID2Color:
             The unique identifier for which to attribute a color.
 
         Returns:
-            tuple[int, int, int]
+            RgbInt
             The RGB color associated with the given ID.
         """
 
@@ -92,12 +94,13 @@ class ID2Color:
 
         if rgb_int_color is None:
             # Generate a new random RGB color
-            rgb_int_color = tuple(np.random.randint(0, 256, 3).tolist())
+            t = np.random.randint(0, 256, 3).tolist()
+            rgb_int_color = (int(t[0]), int(t[1]), int(t[2]))
             self.color_dict[id_] = rgb_int_color
         return rgb_int_color
     
     def __str__(self):
-        return f"ID2Color(color_dict={self.color_dict})"
+        return f"ID2IntColor(color_dict={self.color_dict})"
 
     def __repr__(self):
         return self.__str__()
